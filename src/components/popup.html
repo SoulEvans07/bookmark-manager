@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/libraries/jquery/jquery.js">
+        </script>
+        <script src="/libraries/vue/vue.js">
+        </script>
+        <style>
+            * {
+                white-space: nowrap;
+            }
+            body {
+                margin: 10px;
+            }
+            .bookmark {
+                padding: 2px;
+            }
+            .sub {
+                margin-left: 10px;
+            }
+            .folder:hover {
+                background: #eee;
+            }
+            .title {
+                font-size:20px;
+                margin: 10px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="title">
+            Edit bookmark
+        </div>
+        Name:
+        <input id="name" type="text">
+            <br>
+                Folder:
+                <input id="searchbar" type="text"/>
+                <div id="result">
+                </div>
+                <div id="bookmark-list">
+                </div>
+
+                <div id="hid">HIDDEN</div>
+                <div id="app-3">
+                    <div v-if="see">
+                        {{ msg }}
+                    </div>
+                    <div v-if="!see">
+                        {{ no }}
+                    </div>
+                    <input type="button" v-on:click="show" value="SEE!?">
+                    </input>
+                </div>
+                <script src="popup.js">
+                </script>
+            </br>
+        </input>
+    </body>
+</html>
