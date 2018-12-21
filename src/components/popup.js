@@ -58,6 +58,7 @@ const app3 = new Vue({
     methods: {
         show: function() {
             this.see = !this.see;
+            // todo: https://stackoverflow.com/questions/28884898/chrome-extension-change-default-icon-for-active-tab-only
             chrome.runtime.sendMessage({
                 action: 'updateIcon',
                 value: this.see

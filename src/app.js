@@ -7,3 +7,6 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         }
     }
 });
+
+// todo: set icon when active page is in bookmarks
+//      https://developer.chrome.com/extensions/tabs#event-onActivated
