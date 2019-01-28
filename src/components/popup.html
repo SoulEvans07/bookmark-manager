@@ -17,8 +17,10 @@
     <div id="bookmark-list"></div>
 
     <div id="bookmark-manager">
-        <input type="button" value="LIST" @click="getBookmarks()" title="list">
-        <pre>{{ this.getBookmarks() }}</pre>
+        <bookmark-folder
+            v-for="(bookmark, index) in bookmarkList"
+            v-bind:key="index"
+            v-bind:bookmark="bookmark"></bookmark-folder>
     </div>
 
     <div id="app-3">

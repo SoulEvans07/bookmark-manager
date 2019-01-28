@@ -7,6 +7,11 @@ class Bookmark {
     }
 }
 
+Vue.component("bookmark-folder", {
+    props: ["bookmark"],
+    template: `<div>{{ this.bookmark.title }}</div>`
+});
+
 const app = new Vue({
     el: "#bookmark-manager",
     data: {
@@ -28,12 +33,6 @@ const app = new Vue({
         this.text = "mounted";
     },
     methods: {
-        getBookmarks: function () {
-            let text = "";
-            this.bookmarkList.forEach(bookmark => {
-                text += bookmark.title + "\n";
-            });
-            return text;
-        }
+
     }
 });
