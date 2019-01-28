@@ -1,3 +1,7 @@
+"use strict"
+
+Vue.config.productionTip = false;
+
 //chrome.bookmarks.getTree(function(bookmarks) {
 //    bookmarks.forEach(function(root) {
 //        let bookmark_list = document.getElementById('bookmark-list');
@@ -6,7 +10,8 @@
 //        });
 //    })
 //});
-const addBookmark = function(child) {
+
+const addBookmark = function (child) {
     let div = document.createElement("div");
     div.id = child.id;
     let text = document.createElement("div");
@@ -18,45 +23,45 @@ const addBookmark = function(child) {
         text.onclick = openFolder(child);
     }
     return div;
-}
-const openFolder = function(folder) {
-    return function() {
+};
+
+const openFolder = function (folder) {
+    return function () {
         let folderDiv = document.getElementById(folder.id);
-        folder.children.forEach(function(child) {
+        folder.children.forEach(function (child) {
             let sub = addBookmark(child);
             sub.className += " sub";
             folderDiv.appendChild(sub);
         });
     }
-}
-document.getElementById("searchbar").onkeyup = function() {
+};
+
+document.getElementById("searchbar").onkeyup = function () {
     let results = document.getElementById("result");
     results.innerHTML = "";
-    chrome.bookmarks.search(this.value, function(res) {
-        res.forEach(function(folder) {
+    chrome.bookmarks.search(this.value, function (res) {
+        res.forEach(function (folder) {
             if (!folder.url) {
                 results.appendChild(addBookmark(folder));
             }
         });
     })
-}
+};
+
 chrome.tabs.query({
     active: true,
     currentWindow: true
-}, function(tabs) {
+}, function (tabs) {
     document.getElementById("name").value = tabs[0].title;
 });
-//$("#hid").hide();
-Vue.config.productionTip = false
+
 const app3 = new Vue({
     el: '#app-3',
     data: {
-        see: true,
-        msg: "Now you can see me!",
-        no: "Now you can't!"
+        see: true
     },
     methods: {
-        show: function() {
+        show: function () {
             this.see = !this.see;
             // todo: https://stackoverflow.com/questions/28884898/chrome-extension-change-default-icon-for-active-tab-only
             chrome.runtime.sendMessage({
