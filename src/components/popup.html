@@ -20,7 +20,10 @@
         <bookmark-folder
             v-for="(bookmark, index) in bookmarkList"
             v-bind:key="index"
-            v-bind:bookmark="bookmark"></bookmark-folder>
+            v-bind:bookmark="bookmark"
+            @select="onSelection"></bookmark-folder>
+        <hr>
+        <pre>{{ text }}</pre>
     </div>
 
     <div id="app-3">

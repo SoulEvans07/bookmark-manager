@@ -9,7 +9,12 @@ class Bookmark {
 
 Vue.component("bookmark-folder", {
     props: ["bookmark"],
-    template: `<div>{{ this.bookmark.title }}</div>`
+    template: `<div @click="select">{{ this.bookmark.title }}</div>`,
+    methods: {
+        select: function () {
+            this.$emit("select", this.bookmark);
+        }
+    }
 });
 
 const app = new Vue({
@@ -33,6 +38,8 @@ const app = new Vue({
         this.text = "mounted";
     },
     methods: {
-
+        onSelection(bookmark){
+            this.text = bookmark.title;
+        }
     }
 });
