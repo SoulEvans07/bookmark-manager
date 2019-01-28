@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 Vue.config.productionTip = false;
 
@@ -18,10 +18,7 @@ const addBookmark = function (child) {
     text.className += " bookmark";
     text.appendChild(document.createTextNode(child.title));
     div.appendChild(text);
-    if (child.children) {
-        text.className += " folder";
-        text.onclick = openFolder(child);
-    }
+
     return div;
 };
 
