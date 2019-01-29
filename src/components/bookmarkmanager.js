@@ -26,6 +26,8 @@ const app = new Vue({
         bookmarkList: []
     },
     mounted() {
+        // todo: set icon to full
+
         document.getElementById("searchbar").onkeyup = this.search;
 
         chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -46,13 +48,23 @@ const app = new Vue({
             chrome.bookmarks.search(app.selectedFolder, function (res) {
                 res.forEach(function (folder) {
                     if (!folder.url) {
+                        // todo: append parent folders to title
                         app.bookmarkList.push(new Bookmark(folder.title));
                     }
                 });
             })
         },
         done() {
+            // todo: check if this.selectedFolder exists in bookmarks
+            // todo: set icon to full
+            // todo: if url is stored already -> update
+            // todo: else -> save
+            // save lastFolder
             chrome.storage.sync.set({ lastFolder: this.selectedFolder });
+        },
+        remove() {
+            // todo: remove bookmark for url
+            // todo: set icon to hollow
         }
     }
 });
