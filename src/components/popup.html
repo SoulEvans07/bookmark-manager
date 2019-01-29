@@ -5,29 +5,26 @@
     </script>
     <script src="/libraries/vue/vue.js">
     </script>
-    <link href="/css/popup.css">
+    <link rel="stylesheet" href="/css/popup.css">
 </head>
 <body>
-    <script></script>
-
-    <div class="title">Edit bookmark</div>
-    Name:<input id="name" type="text" title="Name"><br>
-    Folder:<input id="searchbar" type="text" title="Folder"/>
-    <div id="result"></div>
-    <div id="bookmark-list"></div>
-
     <div id="bookmark-manager">
+        <div class="title">Edit bookmark</div>
+        <b>Name: </b><input id="name" type="text" title="Name"><br>
+        <b>Folder: </b><input id="searchbar" type="text" title="Folder" v-model="selectedFolder"/>
+        <div id="result"></div>
+        <div id="bookmark-list"></div>
+
+        <hr>
         <bookmark-folder
             v-for="(bookmark, index) in bookmarkList"
             v-bind:key="index"
             v-bind:bookmark="bookmark"
             @select="onSelection"></bookmark-folder>
-        <hr>
-        <pre>{{ text }}</pre>
     </div>
 
     <div id="app-3">
-        <input type="button" @click="show" value="SEE!?">
+        <!--<input type="button" @click="show" value="SEE!?">-->
     </div>
 
     <script src="popup.js"></script>

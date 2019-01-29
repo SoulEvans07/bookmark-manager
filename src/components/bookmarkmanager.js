@@ -9,7 +9,7 @@ class Bookmark {
 
 Vue.component("bookmark-folder", {
     props: ["bookmark"],
-    template: `<div @click="select">{{ this.bookmark.title }}</div>`,
+    template: `<div @click="select" class="folder">{{ this.bookmark.title }}</div>`,
     methods: {
         select: function () {
             this.$emit("select", this.bookmark);
@@ -20,26 +20,26 @@ Vue.component("bookmark-folder", {
 const app = new Vue({
     el: "#bookmark-manager",
     data: {
-        text: "AS",
+        selectedFolder: "",
         bookmarkList: []
     },
     mounted() {
-        document.getElementById("searchbar").onkeyup = function () {
+        document.getElementById("searchbar").onkeyup = this.search;
+    },
+    methods: {
+        onSelection(bookmark){
+            this.selectedFolder = bookmark.title;
+            this.search();
+        },
+        search(){
             app.bookmarkList = [];
-            chrome.bookmarks.search(this.value, function (res) {
+            chrome.bookmarks.search(app.selectedFolder, function (res) {
                 res.forEach(function (folder) {
                     if (!folder.url) {
                         app.bookmarkList.push(new Bookmark(folder.title));
                     }
                 });
             })
-        };
-
-        this.text = "mounted";
-    },
-    methods: {
-        onSelection(bookmark){
-            this.text = bookmark.title;
         }
     }
 });
