@@ -1,4 +1,26 @@
 "use strict";
+Vue.config.productionTip = false;
+
+const log = function (msg) {
+    chrome.runtime.sendMessage({ action: 'log', value: msg });
+};
+
+const check = async function (url) {
+    let bm = null;
+    log("url: " + url);
+    await chrome.bookmarks.search(url, function (res) {
+        for (let i = 0; i < res.length; i++) {
+            let bookmark = res[i];
+            log(i + ". " + bookmark.url);
+            if (bookmark.url === url) {
+                bm = bookmark;
+                break;
+            }
+        }
+    });
+    log("bookmark: " + JSON.stringify(bm));
+    return bm;
+};
 
 class Bookmark {
     constructor(title, path) {
@@ -17,26 +39,50 @@ Vue.component("bookmark-folder", {
     }
 });
 
+// chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+//     log("update");
+//     if (tabs[0].url) {
+//         log(tabs[0].url);
+//         if (check(tabs[0].url)) {
+//             chrome.runtime.sendMessage({ action: 'updateIcon', value: "full" });
+//         } else {
+//             chrome.runtime.sendMessage({ action: 'updateIcon', value: "hollow" });
+//         }
+//     }
+// });
+
 const app = new Vue({
     el: "#bookmark-manager",
     data: {
         title: "",
+        url: "",
         lastFolder: "",
         selectedFolder: "",
-        bookmarkList: []
+        bookmarkList: [],
+        err: ""
     },
     mounted() {
         // todo: set icon to full
-
+        log("test");
         document.getElementById("searchbar").onkeyup = this.search;
 
         chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
             app.title = tabs[0].title;
+            app.url = tabs[0].url;
+
+            log(check(tabs[0].url));
+
+            if(check(tabs[0].url)){
+                chrome.runtime.sendMessage({ action: 'updateIcon', value: "full" });
+            } else {
+                chrome.runtime.sendMessage({ action: 'updateIcon', value: "hollow" });
+            }
         });
 
         chrome.storage.sync.get(['lastFolder'], function (res) {
             app.selectedFolder = res.lastFolder;
         });
+
     },
     methods: {
         onSelection(bookmark) {

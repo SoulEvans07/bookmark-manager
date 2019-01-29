@@ -10,10 +10,12 @@
 <body>
     <div id="bookmark-manager">
         <div class="title">Edit bookmark</div>
-        <b>Name: </b><input id="name" type="text" title="Name" v-bind:value="title"><br>
+        <b>Name: </b><input id="name" type="text" title="Name" v-model="title"><br>
+        <b>Url: </b><input id="url" type="text" disabled title="Url" v-model="url"/><br>
         <b>Folder: </b><input id="searchbar" type="text" title="Folder" v-model="selectedFolder"/>
-        <div id="result"></div>
-        <div id="bookmark-list"></div>
+        <div>
+            err: "{{ err }}"
+        </div>
 
         <hr>
         <bookmark-folder
@@ -28,11 +30,12 @@
         </div>
     </div>
 
-    <div id="app-3">
+    <!--<div id="app-3">-->
+        <!--<pre>{{ testText }}</pre>-->
         <!--<input type="button" @click="show" value="SEE!?">-->
-    </div>
+    <!--</div>-->
 
-    <script src="popup.js"></script>
+    <!--<script src="popup.js"></script>-->
     <script type="module" src="bookmarkmanager.js"></script>
 </body>
 </html>

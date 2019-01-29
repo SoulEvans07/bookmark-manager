@@ -1,7 +1,5 @@
 "use strict";
 
-Vue.config.productionTip = false;
-
 //chrome.bookmarks.getTree(function(bookmarks) {
 //    bookmarks.forEach(function(root) {
 //        let bookmark_list = document.getElementById('bookmark-list');
@@ -48,7 +46,11 @@ document.getElementById("searchbar").onkeyup = function () {
 const app3 = new Vue({
     el: '#app-3',
     data: {
-        see: true
+        see: true,
+        testText: ""
+    },
+    mounted(){
+        this.test();
     },
     methods: {
         show: function () {
@@ -58,6 +60,21 @@ const app3 = new Vue({
                 action: 'updateIcon',
                 value: this.see
             });
+        },
+        test(){
+            chrome.bookmarks.search("https://www.youtube.com/", function (res) {
+                let text = "";
+                for(let i = 0; i < res.length; i++){
+                    let bookmark = res[i];
+                    if(bookmark.url === "https://www.youtube.com/"){
+                        text = JSON.stringify(bookmark, null, 2);
+                        break;
+                    } else {
+                        text += JSON.stringify(bookmark, null, 2) + "\n";
+                    }
+                }
+                app3.testText = text;
+            })
         }
     }
 });
