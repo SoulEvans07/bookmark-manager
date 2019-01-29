@@ -20,18 +20,28 @@ Vue.component("bookmark-folder", {
 const app = new Vue({
     el: "#bookmark-manager",
     data: {
+        title: "",
+        lastFolder: "",
         selectedFolder: "",
         bookmarkList: []
     },
     mounted() {
         document.getElementById("searchbar").onkeyup = this.search;
+
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            app.title = tabs[0].title;
+        });
+
+        chrome.storage.sync.get(['lastFolder'], function (res) {
+            app.selectedFolder = res.lastFolder;
+        });
     },
     methods: {
-        onSelection(bookmark){
+        onSelection(bookmark) {
             this.selectedFolder = bookmark.title;
             this.search();
         },
-        search(){
+        search() {
             app.bookmarkList = [];
             chrome.bookmarks.search(app.selectedFolder, function (res) {
                 res.forEach(function (folder) {
@@ -40,6 +50,10 @@ const app = new Vue({
                     }
                 });
             })
+        },
+        done() {
+            chrome.storage.sync.set({ lastFolder: this.selectedFolder });
         }
     }
 });
+

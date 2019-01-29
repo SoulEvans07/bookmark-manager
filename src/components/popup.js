@@ -45,13 +45,6 @@ document.getElementById("searchbar").onkeyup = function () {
     })
 };
 
-chrome.tabs.query({
-    active: true,
-    currentWindow: true
-}, function (tabs) {
-    document.getElementById("name").value = tabs[0].title;
-});
-
 const app3 = new Vue({
     el: '#app-3',
     data: {

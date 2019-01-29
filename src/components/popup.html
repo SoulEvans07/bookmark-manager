@@ -10,7 +10,7 @@
 <body>
     <div id="bookmark-manager">
         <div class="title">Edit bookmark</div>
-        <b>Name: </b><input id="name" type="text" title="Name"><br>
+        <b>Name: </b><input id="name" type="text" title="Name" v-bind:value="title"><br>
         <b>Folder: </b><input id="searchbar" type="text" title="Folder" v-model="selectedFolder"/>
         <div id="result"></div>
         <div id="bookmark-list"></div>
@@ -21,6 +21,11 @@
             v-bind:key="index"
             v-bind:bookmark="bookmark"
             @select="onSelection"></bookmark-folder>
+
+        <div>
+            <input type="button" value="Done" @click="done">
+            <input type="button" value="Remove">
+        </div>
     </div>
 
     <div id="app-3">
