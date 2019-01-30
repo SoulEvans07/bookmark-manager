@@ -63,6 +63,7 @@ const app = new Vue({
     },
     mounted() {
         // todo: set icon to full
+        // todo: save bookmark with lastFolder
         log("test");
         document.getElementById("searchbar").onkeyup = this.search;
 
