@@ -23,9 +23,10 @@ const check = async function (url) {
 };
 
 class Bookmark {
-    constructor(title, path) {
+    constructor(title, id) {
         this.title = title;
         this.icon = "";
+        this.id = id;
     }
 }
 
@@ -39,39 +40,28 @@ Vue.component("bookmark-folder", {
     }
 });
 
-// chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-//     log("update");
-//     if (tabs[0].url) {
-//         log(tabs[0].url);
-//         if (check(tabs[0].url)) {
-//             chrome.runtime.sendMessage({ action: 'updateIcon', value: "full" });
-//         } else {
-//             chrome.runtime.sendMessage({ action: 'updateIcon', value: "hollow" });
-//         }
-//     }
-// });
-
 const app = new Vue({
     el: "#bookmark-manager",
     data: {
         title: "",
         url: "",
         lastFolder: "",
-        selectedFolder: "",
+        selectedFolder: {"title": "", "id": -1},
         bookmarkList: [],
-        err: ""
+        err: "",
+        rootFolder: "_manager"
     },
     mounted() {
         // todo: set icon to full
         // todo: save bookmark with lastFolder
-        log("test");
+        //log("test");
         document.getElementById("searchbar").onkeyup = this.search;
 
         chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
             app.title = tabs[0].title;
             app.url = tabs[0].url;
 
-            log(check(tabs[0].url));
+            //log(check(tabs[0].url));
 
             if(check(tabs[0].url)){
                 chrome.runtime.sendMessage({ action: 'updateIcon', value: "full" });
@@ -86,17 +76,20 @@ const app = new Vue({
 
     },
     methods: {
-        onSelection(bookmark) {
-            this.selectedFolder = bookmark.title;
+        onSelection(folder) {
+            this.selectedFolder = folder;
             this.search();
         },
         search() {
+            // todo: remove id if folder name doesnt match any existing folder
+
             app.bookmarkList = [];
-            chrome.bookmarks.search(app.selectedFolder, function (res) {
+            log(app.selectedFolder.title);
+            chrome.bookmarks.search(app.selectedFolder.title, function (res) {
                 res.forEach(function (folder) {
                     if (!folder.url) {
                         // todo: append parent folders to title
-                        app.bookmarkList.push(new Bookmark(folder.title));
+                        app.bookmarkList.push(new Bookmark(folder.title, folder.id));
                     }
                 });
             })
@@ -106,6 +99,11 @@ const app = new Vue({
             // todo: set icon to full
             // todo: if url is stored already -> update
             // todo: else -> save
+            chrome.bookmarks.create({
+                "parentId": this.selectedFolder.id,
+                "title": this.title,
+                "url": this.url
+            });
             // save lastFolder
             chrome.storage.sync.set({ lastFolder: this.selectedFolder });
         },
@@ -116,3 +114,17 @@ const app = new Vue({
     }
 });
 
+
+
+
+// chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+//     log("update");
+//     if (tabs[0].url) {
+//         log(tabs[0].url);
+//         if (check(tabs[0].url)) {
+//             chrome.runtime.sendMessage({ action: 'updateIcon', value: "full" });
+//         } else {
+//             chrome.runtime.sendMessage({ action: 'updateIcon', value: "hollow" });
+//         }
+//     }
+// });

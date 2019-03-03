@@ -12,7 +12,8 @@
         <div class="title">Edit bookmark</div>
         <b>Name: </b><input id="name" type="text" title="Name" v-model="title"><br>
         <b>Url: </b><input id="url" type="text" disabled title="Url" v-model="url"/><br>
-        <b>Folder: </b><input id="searchbar" type="text" title="Folder" v-model="selectedFolder"/>
+        <b>Folder: </b><input id="searchbar" type="text" title="Folder" v-model="selectedFolder.title"/>
+        <div>id: {{selectedFolder.id}}</div>
         <div>
             err: "{{ err }}"
         </div>

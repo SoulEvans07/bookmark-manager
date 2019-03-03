@@ -9,6 +9,7 @@
 //    })
 //});
 
+/*
 const addBookmark = function (child) {
     let div = document.createElement("div");
     div.id = child.id;
@@ -42,7 +43,8 @@ document.getElementById("searchbar").onkeyup = function () {
         });
     })
 };
-
+*/
+/*
 const app3 = new Vue({
     el: '#app-3',
     data: {
@@ -78,3 +80,4 @@ const app3 = new Vue({
         }
     }
 });
+*/

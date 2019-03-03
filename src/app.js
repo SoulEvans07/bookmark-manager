@@ -1,10 +1,11 @@
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-    if (msg.action === "log") {
-        console.log(msg.value);
-    }
+    console.log("["+msg.action+"] "+ msg.value);
+    //if (msg.action === "log") {
+    //    console.log(msg.value);
+    //}
 
     if (msg.action === "updateIcon") {
-        console.log("updateIcon: " + msg.value);
+        //console.log("updateIcon: " + msg.value);
         if (msg.value === 'full') {
             chrome.browserAction.setIcon({ path: { "256": "imgs/save_32.png" } });
         } else if (msg.value === 'hollow'){
