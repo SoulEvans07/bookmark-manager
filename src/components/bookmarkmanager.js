@@ -46,7 +46,7 @@ const app = new Vue({
         title: "",
         url: "",
         lastFolder: "",
-        selectedFolder: {"title": "", "id": -1},
+        selectedFolder: {"title": "", "id": undefined},
         bookmarkList: [],
         err: "",
         rootFolder: "_manager"
@@ -99,7 +99,7 @@ const app = new Vue({
             // todo: check if this.selectedFolder exists in bookmarks
             // todo: set icon to full
             // todo: if url is stored already -> update
-            // todo: else -> save
+            // else -> save
             chrome.bookmarks.create({
                 "parentId": this.selectedFolder.id,
                 "title": this.title,
