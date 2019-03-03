@@ -56,6 +56,7 @@ const app = new Vue({
         // todo: save bookmark with lastFolder
         //log("test");
         document.getElementById("searchbar").onkeyup = this.search;
+        document.getElementById("searchbar").focus();
 
         chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
             app.title = tabs[0].title;
