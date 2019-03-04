@@ -21,7 +21,8 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
 
     console.log("["+msg.action+"] "+ JSON.stringify(msg.value));
 
-    if(msg.action === "bookmarkSaved") {
+    if(msg.action === "bookmarkUpdate") {
+        storage.bookmark = msg.value;
         setIconByBookmark(msg.value);
     }
     

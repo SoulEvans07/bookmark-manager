@@ -96,15 +96,23 @@ const app = new Vue({
                 log("save");
                 log(tmp);
                 chrome.bookmarks.create(tmp, function(res) {
-                    chrome.runtime.sendMessage({action: "bookmarkSaved", value: res});
+                    this.bookmark = res;
+                    chrome.runtime.sendMessage({action: "bookmarkUpdate", value: res});
+                    chrome.storage.sync.set({ lastFolder: this.selectedFolder });
+                    window.close();
                 });
             }
-            // save lastFolder
-            chrome.storage.sync.set({ lastFolder: this.selectedFolder });
         },
         remove() {
             // todo: remove bookmark for url
             // todo: set icon to hollow
+            if(this.bookmark){
+                chrome.bookmarks.remove(this.bookmark.id, function() {
+                    this.bookmark = null;
+                    chrome.runtime.sendMessage({action: "bookmarkUpdate", value: null});
+                    window.close();
+                });
+            }
         }
     }
 });
