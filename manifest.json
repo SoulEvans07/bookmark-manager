@@ -2,7 +2,15 @@
     "name": "Bookmark Manager",
     "version": "1.0",
     "description": "Adds searchbar for folders in Edit Bookmark panel.",
-    "permissions": ["bookmarks", "activeTab", "declarativeContent", "storage", "http://*/", "https://*/"],
+    "permissions": [
+        "bookmarks",
+        "activeTab",
+        "webNavigation",
+        "declarativeContent",
+        "storage",
+        "http://*/",
+        "https://*/"
+    ],
     "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
     "background": {
         "scripts": ["src/app.js"],

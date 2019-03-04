@@ -5,23 +5,6 @@ const log = function (msg) {
     chrome.runtime.sendMessage({ action: 'log', value: msg });
 };
 
-const check = async function (url) {
-    let bm = null;
-    log("url: " + url);
-    await chrome.bookmarks.search(url, function (res) {
-        for (let i = 0; i < res.length; i++) {
-            let bookmark = res[i];
-            log(i + ". " + bookmark.url);
-            if (bookmark.url === url) {
-                bm = bookmark;
-                break;
-            }
-        }
-    });
-    log("bookmark: " + JSON.stringify(bm));
-    return bm;
-};
-
 class Bookmark {
     constructor(title, id) {
         this.title = title;
@@ -52,29 +35,25 @@ const app = new Vue({
         rootFolder: "_manager"
     },
     mounted() {
-        // todo: set icon to full
-        // todo: save bookmark with lastFolder
-        //log("test");
         document.getElementById("searchbar").onkeyup = this.search;
         document.getElementById("searchbar").focus();
 
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-            app.title = tabs[0].title;
-            app.url = tabs[0].url;
-
-            //log(check(tabs[0].url));
-
-            if(check(tabs[0].url)){
-                chrome.runtime.sendMessage({ action: 'updateIcon', value: "full" });
-            } else {
-                chrome.runtime.sendMessage({ action: 'updateIcon', value: "hollow" });
+        chrome.runtime.sendMessage({action: "getActiveTab"}, function(res) {
+            if(res){
+                app.title = res.title;
+                app.url = res.url;
             }
         });
 
         chrome.storage.sync.get(['lastFolder'], function (res) {
             app.selectedFolder = res.lastFolder;
+            app.search();
         });
 
+        // todo: save bookmark with lastFolder
+
+        // todo: set icon to full because we should have saved it by now
+        // chrome.runtime.sendMessage({ action: 'updateIcon', value: "full" });
     },
     methods: {
         onSelection(folder) {
@@ -114,18 +93,3 @@ const app = new Vue({
         }
     }
 });
-
-
-
-
-// chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-//     log("update");
-//     if (tabs[0].url) {
-//         log(tabs[0].url);
-//         if (check(tabs[0].url)) {
-//             chrome.runtime.sendMessage({ action: 'updateIcon', value: "full" });
-//         } else {
-//             chrome.runtime.sendMessage({ action: 'updateIcon', value: "hollow" });
-//         }
-//     }
-// });
