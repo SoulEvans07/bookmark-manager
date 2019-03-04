@@ -14,11 +14,11 @@ class Bookmark {
 }
 
 Vue.component("bookmark-folder", {
-    props: ["bookmark"],
-    template: `<div @click="select" class="folder">{{ this.bookmark.title }}</div>`,
+    props: ["folder"],
+    template: `<div @click="select" class="folder">{{ this.folder.title }}</div>`,
     methods: {
         select: function () {
-            this.$emit("select", this.bookmark);
+            this.$emit("select", this.folder);
         }
     }
 });
@@ -29,8 +29,9 @@ const app = new Vue({
         title: "",
         url: "",
         lastFolder: "",
+        bookmark: null,
         selectedFolder: {"title": "", "id": undefined},
-        bookmarkList: [],
+        folderList: [],
         err: "",
         rootFolder: "_manager"
     },
@@ -43,6 +44,10 @@ const app = new Vue({
                 app.title = res.title;
                 app.url = res.url;
             }
+        });
+
+        chrome.runtime.sendMessage({action: "getBookmark"}, function(res) {
+            app.bookmark = res;
         });
 
         chrome.storage.sync.get(['lastFolder'], function (res) {
@@ -63,27 +68,37 @@ const app = new Vue({
         search() {
             // todo: remove id if folder name doesnt match any existing folder
 
-            app.bookmarkList = [];
-            log(app.selectedFolder.title);
+            app.folderList = [];
+            // log("search for :" + app.selectedFolder.title);
             chrome.bookmarks.search(app.selectedFolder.title, function (res) {
                 res.forEach(function (folder) {
                     if (!folder.url) {
                         // todo: append parent folders to title
-                        app.bookmarkList.push(new Bookmark(folder.title, folder.id));
+                        app.folderList.push(new Bookmark(folder.title, folder.id));
                     }
                 });
-            })
+            });
         },
         done() {
             // todo: check if this.selectedFolder exists in bookmarks
             // todo: set icon to full
             // todo: if url is stored already -> update
-            // else -> save
-            chrome.bookmarks.create({
-                "parentId": this.selectedFolder.id,
-                "title": this.title,
-                "url": this.url
-            });
+            if(this.bookmark){
+                log("update this");
+                log(this.bookmark);
+            } else {
+                let tmp = {
+                    "parentId": this.selectedFolder.id,
+                    "title": this.title,
+                    "url": this.url
+                }
+
+                log("save");
+                log(tmp);
+                chrome.bookmarks.create(tmp, function(res) {
+                    chrome.runtime.sendMessage({action: "bookmarkSaved", value: res});
+                });
+            }
             // save lastFolder
             chrome.storage.sync.set({ lastFolder: this.selectedFolder });
         },

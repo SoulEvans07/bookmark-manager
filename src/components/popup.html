@@ -21,9 +21,9 @@
         <hr>
         <!--todo: make it a dropdown (https://www.w3schools.com/howto/howto_js_filter_dropdown.asp)-->
         <bookmark-folder
-            v-for="(bookmark, index) in bookmarkList"
+            v-for="(folder, index) in folderList"
             v-bind:key="index"
-            v-bind:bookmark="bookmark"
+            v-bind:folder="folder"
             @select="onSelection"></bookmark-folder>
 
         <div>

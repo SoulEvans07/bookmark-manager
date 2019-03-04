@@ -1,11 +1,30 @@
-let activeTab = {
-    tabId : null,
-    windowId: null,
-    url: null
+let storage = {
+    bookmark: {},
+    activeTab: {}
+}
+
+const setActiveTab = function(tab){
+    // console.log(tab);
+    storage.activeTab = tab;
 }
 
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+    if(msg.action === "getActiveTab") {
+        sendResponse(storage.activeTab);
+        return true;
+    }
+
+    if(msg.action === "getBookmark") {
+        sendResponse(storage.bookmark);
+        return true;
+    }
+
     console.log("["+msg.action+"] "+ JSON.stringify(msg.value));
+
+    if(msg.action === "bookmarkSaved") {
+        setIconByBookmark(msg.value);
+    }
+    
     if (msg.action === "updateIcon") {
         //console.log("updateIcon: " + msg.value);
         if (msg.value === 'full') {
@@ -14,21 +33,21 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
             chrome.browserAction.setIcon({ path: { "256": "imgs/icon_32.png" } });
         }
     }
-
-    if(msg.action === "getActiveTab") {
-        sendResponse(activeTab);
-    }
 });
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
-    if( (tabId == activeTab.tabId  || tabId == activeTab.id ) && changeInfo.url){
+    if((tabId == storage.activeTab.tabId  || tabId == storage.activeTab.id ) && changeInfo.status == "loading"){
         setActiveTab(tab);
-        onUrlChange(changeInfo.url);
+        if(changeInfo.url) {
+            onUrlChange(changeInfo.url);
+        } else {
+            onUrlChange(storage.activeTab.url);
+        }
     }
 });
 
 chrome.tabs.onActivated.addListener(function(activeInfo) {
-    activeTab = activeInfo;
+    setActiveTab(activeInfo);
     onTabSelect();
 });
 
@@ -43,32 +62,31 @@ const onTabSelect = function() {
     });
 }
 
-const setActiveTab = function(tab){
-    console.log(tab);
-    activeTab = tab;
-}
-
 const onUrlChange = function(url){
     let checkPromise = new Promise(function(res,rej){
         searchBookmarks(res, rej, url);
     })
     
     checkPromise.then(function(res){
-        //console.log("result: " + JSON.stringify(res));
-        if(res){
-            chrome.browserAction.setIcon({ path: { "32": "imgs/save_32.png" } });
-        } else {
-            chrome.browserAction.setIcon({ path: { "32": "imgs/icon_32.png" } });
-        }
+        storage.bookmark = res;
+        setIconByBookmark(res);
     }).catch(function(err){
         console.log("[ERROR] " + err);
     });
 }
 
+const setIconByBookmark = function(bm) {
+    if(bm){
+        chrome.browserAction.setIcon({ path: { "32": "imgs/save_32.png" } });
+    } else {
+        chrome.browserAction.setIcon({ path: { "32": "imgs/icon_32.png" } });
+    }
+}
+
 const searchBookmarks = function (resolve, reject, url) {
     let bm = null;
     try{
-        chrome.bookmarks.search(url, function (res) {
+        chrome.bookmarks.search({"url": url}, function (res) {
             for (let i = 0; i < res.length; i++) {
                 let bookmark = res[i];
                 //console.log(i + ". " + bookmark.url);
