@@ -12,19 +12,11 @@ class BookmarkFolder {
     }
 
     equals(other){
-        if(other && this.id == other.id && this.title == other.title){
+        if(other && this.id == other.id && this.title == other.title)
             return true;
-        }
-
         return false;
     }
 }
-
-const modifiers = [ 
-    "esc", "control", "shift", "alt", "meta", "altgraph",
-    "arrowup", "arrowdown", "arrowright", "arrowleft",
-    "pageup", "pagedown", "end", "home", "insert"
-];
 
 Vue.component("bookmark-folder", {
     props: ["folder"],
@@ -87,6 +79,7 @@ const app = new Vue({
                 app.prevFolderValue = app.selectedFolder.title;
                 app.search();
             }).catch(function(){
+                // todo: might be enough to just use this as lastFolder selection
                 chrome.bookmarks.getRecent(1, function(res) {
                     chrome.bookmarks.get(res[0].parentId, function(parent) {
                         app.selectedFolder = new BookmarkFolder(parent[0].title, parent[0].id);
@@ -170,6 +163,7 @@ const app = new Vue({
             }
         },
         remove() {
+            log(this.bookmark);
             if(this.bookmark){
                 chrome.bookmarks.remove(this.bookmark.id, function() {
                     this.bookmark = null;

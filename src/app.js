@@ -1,5 +1,5 @@
 let storage = {
-    bookmark: {},
+    bookmark: null,
     activeTab: {}
 }
 
