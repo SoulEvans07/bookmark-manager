@@ -22,6 +22,21 @@ Vue.component("bookmark-folder", {
     }
 });
 
+const folderExists = function(resolve, reject, folder){
+    if(folder && folder.id && folder.title){
+        chrome.bookmarks.get(folder.id, function(res){
+            if(res && res.length > 0) {
+                folder.title = res[0].title;
+                resolve(folder);
+            } else {
+                reject();
+            }
+        });
+    } else {
+        reject();
+    }
+}
+
 const app = new Vue({
     el: "#bookmark-manager",
     data: {
@@ -34,7 +49,7 @@ const app = new Vue({
         err: "",
         rootFolder: "_manager"
     },
-    mounted() {
+    async mounted() {
         document.getElementById("searchbar").onkeyup = this.search;
         document.getElementById("searchbar").focus();
 
@@ -50,8 +65,21 @@ const app = new Vue({
         });
 
         chrome.storage.sync.get(['lastFolder'], function (res) {
-            app.selectedFolder = res.lastFolder;
-            app.search();
+            // sanity check lastFolder, remove if invalid
+            new Promise(function(resolve, reject){
+                folderExists(resolve, reject, res.lastFolder);
+            }).then(function(folder){
+                app.selectedFolder = folder;
+                app.search();
+            }).catch(function(){
+                chrome.bookmarks.getRecent(1, function(res) {
+                    chrome.bookmarks.get(res[0].parentId, function(parent) {
+                        app.selectedFolder = new BookmarkFolder(parent[0].title, parent[0].id);
+                        app.search();
+                    });
+                });
+                
+            })
         });
 
         // todo: save bookmark with lastFolder
@@ -108,6 +136,11 @@ const app = new Vue({
                     window.close();
                 });
             }
+        },
+        quickSave(){
+            log("quickSave");
+            log(this.selectedFolder);
+            chrome.storage.sync.set({ lastFolder: this.selectedFolder });
         }
     }
 });

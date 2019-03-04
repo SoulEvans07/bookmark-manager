@@ -12,11 +12,11 @@
         <div class="title">Edit bookmark</div>
         <b>Name: </b><input id="name" type="text" title="Name" v-model="title"><br>
         <b>Url: </b><input id="url" type="text" disabled title="Url" v-model="url"/><br>
-        <b>Folder: </b><input id="searchbar" type="text" title="Folder" v-model="selectedFolder.title"/>
-        <div>id: {{selectedFolder.id}}</div>
-        <div>
-            err: "{{ err }}"
-        </div>
+        <b>Folder: </b><input id="searchbar" type="text" title="Folder" v-model="selectedFolder.title"/><br>
+        <!--
+        <b>id: </b><input id="id" type="text" title="id" v-model="selectedFolder.id"/><br>
+        <b>err: </b><textarea id="err" disabled title="err" v-model="err" style="font-size:9px"></textarea><br>
+        -->
 
         <hr>
         <!--todo: make it a dropdown (https://www.w3schools.com/howto/howto_js_filter_dropdown.asp)-->
@@ -29,15 +29,10 @@
         <div>
             <input type="button" value="Done" @click="done">
             <input type="button" value="Remove" @click="remove">
+            <!--input type="button" value="Quick Save" @click="quickSave"-->
         </div>
     </div>
 
-    <!--<div id="app-3">-->
-        <!--<pre>{{ testText }}</pre>-->
-        <!--<input type="button" @click="show" value="SEE!?">-->
-    <!--</div>-->
-
-    <!--<script src="popup.js"></script>-->
     <script type="module" src="bookmarkmanager.js"></script>
 </body>
 </html>
