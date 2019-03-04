@@ -59,6 +59,7 @@ const app = new Vue({
         lastFolder: "",
         bookmark: null,
         selectedFolder: {"title": "", "id": undefined},
+        prevFolderValue: "",
         folderList: [],
         err: "",
         rootFolder: "_manager"
@@ -83,11 +84,13 @@ const app = new Vue({
                 folderExists(resolve, reject, res.lastFolder);
             }).then(function(folder){
                 app.selectedFolder = folder;
+                app.prevFolderValue = app.selectedFolder.title;
                 app.search();
             }).catch(function(){
                 chrome.bookmarks.getRecent(1, function(res) {
                     chrome.bookmarks.get(res[0].parentId, function(parent) {
                         app.selectedFolder = new BookmarkFolder(parent[0].title, parent[0].id);
+                        app.prevFolderValue = app.selectedFolder.title;
                         app.search();
                     });
                 });
@@ -103,24 +106,35 @@ const app = new Vue({
     methods: {
         onSelection(folder) {
             this.selectedFolder = folder;
+            this.prevFolderValue = this.selectedFolder.title;
             this.search();
         },
         search(event) {
             if(event && event.key.toLowerCase() == "enter") return;
-            if(event && !modifiers.includes(event.key.toLowerCase())){
-                log(event.key.toLowerCase());
+
+            // remove id if folder name changed
+            if(this.selectedFolder.title != this.prevFolderValue){
                 this.selectedFolder.id = undefined;
+                this.prevFolderValue = this.selectedFolder.title; 
             }
-            // todo: remove id if folder name doesnt match any existing folder
 
             chrome.bookmarks.search(app.selectedFolder.title, function (res) {
                 app.folderList = [];
+                let matching = [];
                 res.forEach(function (folder) {
                     if (!folder.url) {
                         // todo: append parent folders to title
-                        app.folderList.push(new BookmarkFolder(folder.title, folder.id));
+                        let bf = new BookmarkFolder(folder.title, folder.id)
+                        if(app.selectedFolder.title === bf.title){
+                            matching.push(bf);
+                        }
+                        app.folderList.push(bf);
                     }
                 });
+                // if folder name matches one folder, set id
+                if(matching.length == 1){
+                    app.selectedFolder = matching[0];
+                }
             });
         },
         folderSelect(event) {
