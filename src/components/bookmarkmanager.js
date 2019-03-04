@@ -10,7 +10,21 @@ class BookmarkFolder {
         this.title = title;
         this.id = id;
     }
+
+    equals(other){
+        if(other && this.id == other.id && this.title == other.title){
+            return true;
+        }
+
+        return false;
+    }
 }
+
+const modifiers = [ 
+    "esc", "control", "shift", "alt", "meta", "altgraph",
+    "arrowup", "arrowdown", "arrowright", "arrowleft",
+    "pageup", "pagedown", "end", "home", "insert"
+];
 
 Vue.component("bookmark-folder", {
     props: ["folder"],
@@ -50,7 +64,6 @@ const app = new Vue({
         rootFolder: "_manager"
     },
     async mounted() {
-        document.getElementById("searchbar").onkeyup = this.search;
         document.getElementById("searchbar").focus();
 
         chrome.runtime.sendMessage({action: "getActiveTab"}, function(res) {
@@ -92,12 +105,16 @@ const app = new Vue({
             this.selectedFolder = folder;
             this.search();
         },
-        search() {
+        search(event) {
+            if(event && event.key.toLowerCase() == "enter") return;
+            if(event && !modifiers.includes(event.key.toLowerCase())){
+                log(event.key.toLowerCase());
+                this.selectedFolder.id = undefined;
+            }
             // todo: remove id if folder name doesnt match any existing folder
 
-            app.folderList = [];
-            // log("search for :" + app.selectedFolder.title);
             chrome.bookmarks.search(app.selectedFolder.title, function (res) {
+                app.folderList = [];
                 res.forEach(function (folder) {
                     if (!folder.url) {
                         // todo: append parent folders to title
@@ -105,6 +122,16 @@ const app = new Vue({
                     }
                 });
             });
+        },
+        folderSelect(event) {
+            if(this.folderList.length > 0){
+                if(this.folderList[0].equals(this.selectedFolder)){
+                    log("should save");
+                } else {
+                    this.selectedFolder = this.folderList[0];
+                    this.search();
+                }
+            }
         },
         done() {
             // todo: check if this.selectedFolder exists in bookmarks

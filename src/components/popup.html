@@ -12,9 +12,12 @@
         <div class="title">Edit bookmark</div>
         <b>Name: </b><input id="name" type="text" title="Name" v-model="title"><br>
         <b>Url: </b><input id="url" type="text" disabled title="Url" v-model="url"/><br>
-        <b>Folder: </b><input id="searchbar" type="text" title="Folder" v-model="selectedFolder.title"/><br>
+        <b>Folder: </b><input id="searchbar" type="text" title="Folder" v-model="selectedFolder.title"
+            @keyup.enter="folderSelect($event)"
+            @keyup="search($event)"/><br>
+        
+        <b>id: </b><input id="id" type="text" disabled title="id" v-model="selectedFolder.id"/><br>
         <!--
-        <b>id: </b><input id="id" type="text" title="id" v-model="selectedFolder.id"/><br>
         <b>err: </b><textarea id="err" disabled title="err" v-model="err" style="font-size:9px"></textarea><br>
         -->
 
