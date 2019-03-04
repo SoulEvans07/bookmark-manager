@@ -5,10 +5,9 @@ const log = function (msg) {
     chrome.runtime.sendMessage({ action: 'log', value: msg });
 };
 
-class Bookmark {
+class BookmarkFolder {
     constructor(title, id) {
         this.title = title;
-        this.icon = "";
         this.id = id;
     }
 }
@@ -74,7 +73,7 @@ const app = new Vue({
                 res.forEach(function (folder) {
                     if (!folder.url) {
                         // todo: append parent folders to title
-                        app.folderList.push(new Bookmark(folder.title, folder.id));
+                        app.folderList.push(new BookmarkFolder(folder.title, folder.id));
                     }
                 });
             });
@@ -82,9 +81,11 @@ const app = new Vue({
         done() {
             // todo: check if this.selectedFolder exists in bookmarks
             if(this.bookmark){
-                // todo: if url is stored already -> update
                 log("update this");
                 log(this.bookmark);
+                // todo: if url or title changed, update
+                // todo: if this.selectedFolder.id != this.bookmark.parentId, move
+                // todo: window.close();
             } else {
                 let tmp = {
                     "parentId": this.selectedFolder.id,
