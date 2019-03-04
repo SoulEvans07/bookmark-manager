@@ -81,9 +81,8 @@ const app = new Vue({
         },
         done() {
             // todo: check if this.selectedFolder exists in bookmarks
-            // todo: set icon to full
-            // todo: if url is stored already -> update
             if(this.bookmark){
+                // todo: if url is stored already -> update
                 log("update this");
                 log(this.bookmark);
             } else {
@@ -92,9 +91,6 @@ const app = new Vue({
                     "title": this.title,
                     "url": this.url
                 }
-
-                log("save");
-                log(tmp);
                 chrome.bookmarks.create(tmp, function(res) {
                     this.bookmark = res;
                     chrome.runtime.sendMessage({action: "bookmarkUpdate", value: res});
@@ -104,8 +100,6 @@ const app = new Vue({
             }
         },
         remove() {
-            // todo: remove bookmark for url
-            // todo: set icon to hollow
             if(this.bookmark){
                 chrome.bookmarks.remove(this.bookmark.id, function() {
                     this.bookmark = null;

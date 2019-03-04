@@ -19,12 +19,13 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         return true;
     }
 
-    console.log("["+msg.action+"] "+ JSON.stringify(msg.value));
-
     if(msg.action === "bookmarkUpdate") {
         storage.bookmark = msg.value;
         setIconByBookmark(msg.value);
+        return true;
     }
+
+    console.log("["+msg.action+"] "+ JSON.stringify(msg.value));
     
     if (msg.action === "updateIcon") {
         //console.log("updateIcon: " + msg.value);
