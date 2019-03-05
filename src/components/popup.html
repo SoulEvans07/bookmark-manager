@@ -5,19 +5,22 @@
     </script>
     <script src="/libraries/vue/vue.js">
     </script>
-    <link rel="stylesheet" href="/css/popup.css">
+    <link rel="stylesheet" href="./popup.css">
 </head>
 <body>
     <div id="bookmark-manager">
-        <div class="title">Edit bookmark</div>
-        <b>Name: </b><input id="name" type="text" title="Name" v-model="title"><br>
-        <b>Url: </b><input id="url" type="text" disabled title="Url" v-model="url"/><br>
-        <b>Folder: </b><input id="searchbar" type="text" title="Folder" v-model="selectedFolder.title"
+        <div><h1 class="title">{{ this.bookmark ? "Edit bookmark" : "New bookmark" }}</h1></div>
+        <div class="input-row"><h2 class="row-title">Name</h2>
+            <input id="name" type="text" title="Name" v-model="title"></div>
+        <!--<div class="input-row"><h2>Url</h2>
+            <input id="url" type="text" disabled title="Url" v-model="url"/></div>-->
+        <div class="input-row"><h2 class="row-title">Folder</h2>
+            <input id="searchbar" type="text" title="Folder" v-model="selectedFolder.title"
             @keyup.enter="folderSelect($event)"
-            @keyup="search($event)"/><br>
+            @keyup="search($event)"/></div>
         
-        <b>id: </b><input id="id" type="text" disabled title="id" v-model="selectedFolder.id"/><br>
         <!--
+        <b>id: </b><input id="id" type="text" disabled title="id" v-model="selectedFolder.id"/><br>
         <b>err: </b><textarea id="err" disabled title="err" v-model="err" style="font-size:9px"></textarea><br>
         -->
 
@@ -29,9 +32,9 @@
             v-bind:folder="folder"
             @select="onSelection"></bookmark-folder>
 
-        <div>
-            <input type="button" value="Done" @click="done">
-            <input type="button" value="Remove" @click="remove">
+        <div class="button-row">
+            <input class="button" type="button" value="Remove" @click="remove">
+            <input class="button done" type="button" value="Done" @click="done">
             <!--input type="button" value="Quick Save" @click="quickSave"-->
         </div>
     </div>

@@ -57,7 +57,9 @@ const app = new Vue({
         rootFolder: "_manager"
     },
     async mounted() {
-        document.getElementById("searchbar").focus();
+        document.getElementById("name").focus();
+        //document.getElementById("searchbar").focus();
+        //#4286f4
 
         chrome.runtime.sendMessage({action: "getActiveTab"}, function(res) {
             if(res){
@@ -68,6 +70,7 @@ const app = new Vue({
 
         chrome.runtime.sendMessage({action: "getBookmark"}, function(res) {
             app.bookmark = res;
+            // todo: set selectedFolder from the bookmark
         });
 
         chrome.storage.sync.get(['lastFolder'], function (res) {
