@@ -73,6 +73,7 @@ input[type="text"] {
 }
 
 .button.done {
-    background-color: #006aff;
+    border-color: #4285f4;
+    background-color: #4285f4;
     color: white;
 }
