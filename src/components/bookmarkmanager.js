@@ -58,8 +58,6 @@ const app = new Vue({
     },
     async mounted() {
         document.getElementById("name").focus();
-        //document.getElementById("searchbar").focus();
-        //#4286f4
 
         chrome.runtime.sendMessage({action: "getActiveTab"}, function(res) {
             if(res){
@@ -136,9 +134,11 @@ const app = new Vue({
         folderSelect(event) {
             if(this.folderList.length > 0){
                 if(this.folderList[0].equals(this.selectedFolder)){
+                    // todo: save bookmark
                     log("should save");
                 } else {
                     this.selectedFolder = this.folderList[0];
+                    // todo: instead of search, the list should be cleared
                     this.search();
                 }
             }
