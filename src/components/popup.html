@@ -14,23 +14,29 @@
             <input id="name" type="text" title="Name" v-model="title"></div>
         <!--<div class="input-row"><h2>Url</h2>
             <input id="url" type="text" disabled title="Url" v-model="url"/></div>-->
-        <div class="input-row"><h2 class="row-title">Folder</h2>
-            <input id="searchbar" type="text" title="Folder" v-model="selectedFolder.title"
-            @keyup.enter="folderSelect($event)"
-            @keyup="search($event)"/></div>
+        <div class="input-row">
+            <h2 class="row-title">Folder</h2>
+            <div class="search-row">
+                <input id="searchbar" type="text" title="Folder" v-model="selectedFolder.title"
+                    @keyup.enter="folderSelect($event)"
+                    @keyup="search($event)"/>
+                <div class="dropdown">
+                    <bookmark-folder
+                        v-for="(folder, index) in folderList"
+                        v-bind:key="index"
+                        v-bind:folder="folder"
+                        @select="onSelection"></bookmark-folder>
+                </div>
+            </div>
+        </div>
         
         <!--
         <b>id: </b><input id="id" type="text" disabled title="id" v-model="selectedFolder.id"/><br>
         <b>err: </b><textarea id="err" disabled title="err" v-model="err" style="font-size:9px"></textarea><br>
         -->
 
-        <hr>
         <!--todo: make it a dropdown (https://www.w3schools.com/howto/howto_js_filter_dropdown.asp)-->
-        <bookmark-folder
-            v-for="(folder, index) in folderList"
-            v-bind:key="index"
-            v-bind:folder="folder"
-            @select="onSelection"></bookmark-folder>
+        
 
         <div class="button-row">
             <input class="button" type="button" value="Remove" @click="remove">
